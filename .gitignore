@@ -4,3 +4,12 @@ in.txt
 out.txt
 
 !test.py
+A.py
+B.py
+C.py
+D.py
+in.txt
+out.txt
+a.out
+__pycache__/
+*.pyc
