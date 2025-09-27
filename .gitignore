@@ -1,15 +1,12 @@
-# test.py (was ignored)
+# ローカル作業用のファイル
+test.py
+sub.py
+
+# コンパイル結果や入出力ファイル
 a.out
 in.txt
 out.txt
 
-!test.py
-A.py
-B.py
-C.py
-D.py
-in.txt
-out.txt
-a.out
+# Python が生成するキャッシュ
 __pycache__/
 *.pyc
