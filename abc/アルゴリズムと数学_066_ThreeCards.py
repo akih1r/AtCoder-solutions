@@ -11,36 +11,26 @@ import math
 #alpha = [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z]
 
 N, K = map(int,input().split())
-path = defaultdict(int)
-A = list(map(int,input().split()))
-for i in range(N):
-    path[i+1] = A[i]
-
-visited1 = {}
-cnt = 0
-def f1(now, step):
-    if now in visited1:
-        return now, step
-    visited1[now] = step
-    return f1(path[now], step+1)
-
-start, step = f1(1, 0)
-
-visited2 = set()
-def f2(now, lst):
-    if now in visited2:
-        return lst
-    visited2.add(now)
-    return f2(path[now], lst + [now])
+comb = 0
+for black in range(1, N + 1):
+    # 黒の範囲
+    b_start = black - K + 1
+    b_end   = black + K - 1
     
+    b_start = max(1, b_start)
+    b_end   = min(N, b_end)
 
-l = f2(start, [])
-r = (K - step) % len(l)
+    for white in range(b_start, b_end + 1):
+        
+        w_start = white - K + 1
+        w_end   = white + K - 1
+        
+        common_start = max(b_start, w_start)
+        common_end   = min(b_end, w_end)
+        
+        if common_start <= common_end:
+            length = common_end - common_start + 1
+            comb += length
 
-print(l[r])
-
-
-            
-    
-    
+print(N**3 - comb)
     
