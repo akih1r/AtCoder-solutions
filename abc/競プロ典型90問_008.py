@@ -1,0 +1,44 @@
+import sys, bisect, heapq
+from collections import defaultdict, deque, OrderedDict, Counter
+from itertools import combinations, permutations, accumulate
+sys.setrecursionlimit(10**7)
+import math
+#N=int(input())
+#N, T = map(int,input().split())
+#A = list(map(int,input().split()))
+#ls = [list(map(int, input().split())) for _ in range(N)]
+#grid = [list(input()) for _ in range(N)]
+#alpha = [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z]
+
+
+
+MOD = 1000000007
+T = 'atcoder'
+
+# a に b を足して MOD をとる関数
+def add(a, b):
+    a += b
+    if a >= MOD:
+        a -= MOD
+    return a
+
+N = int(input())
+S = input()
+
+# DP テーブル
+dp = [[0]*(len(T)+1) for _ in range(N+1)]
+
+# 初期条件
+dp[0][0] = 1
+
+# ループ
+for i in range(N):
+    for j in range(len(T)+1):
+        # S[i] を選ばない場合
+        dp[i+1][j] = add(dp[i+1][j], dp[i][j])
+
+        # S[i] を選ぶ場合
+        if j < len(T) and S[i] == T[j]:
+            dp[i+1][j+1] = add(dp[i+1][j+1], dp[i][j])
+
+print(dp[N][len(T)])
