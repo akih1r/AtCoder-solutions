@@ -16,25 +16,21 @@ import math
 import sys
 import heapq
 
-# 入力を受け取る
-# N: 参加人数, K: K番目の若さを知りたい
+
+input = sys.stdin.readline
+
 N, K = map(int, input().split())
 X = list(map(int, input().split()))
 
-
-# ここには常に「現時点で最も若いK人」を入れる
-#トップKをつねに残しておく
 pq = []
-
-
+#常にトップｋだけを入れておく
 for i in range(N):
     age_rank = X[i]
     
-    heapq.heappush(pq, -age_rank)
+    heapq.heappush(pq, (-age_rank, i + 1))
     
     if len(pq) > K:
         heapq.heappop(pq)
     
-    
     if i >= K - 1:
-        print(-pq[0])
+        print(pq[0][1])
