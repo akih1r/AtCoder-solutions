@@ -28,7 +28,7 @@ for i in range(M):
     dist += abs(acc_S[where+A[i]] - acc_S[where])
     dist %= 100000
     where += A[i]
-
+ 
 print(dist)
 
 
