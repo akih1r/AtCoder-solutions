@@ -32,10 +32,4 @@ while stack:
 
 for k in range(1, 2*N+2):
     print(dist[k])     
-    
-        
-
-
-
-
 
