@@ -12,3 +12,9 @@ S.islower()
 
 #すべてが大文字か判断
 S.isupper()
+
+#前方が引数から始まるか真偽
+S.startwith("")
+
+#後方が引数から始まるか真偽
+S.endwith("")
