@@ -34,8 +34,10 @@ dp = [[[float('inf')]*(Y+1) for _ in range(0,X+1)] for _ in range(N+1)]
 #dp[i][たこやき][たいやき]　=　弁当最小個数
 dp[0][0][0] = 0
 for i in range(0,N):
-    for tako in range(0,X):
-        for tai in range(0,Y):
+    for tako in range(0,X+1):
+        for tai in range(0,Y+1):
+            if dp[i][tako][tai] == float('inf'):
+                continue
             #えらばない
             dp[i+1][tako][tai] = min(dp[i][tako][tai], dp[i+1][tako][tai])
             
