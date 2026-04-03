@@ -21,26 +21,35 @@ import math
 #
 #=========================================================
 
-MOD = 998244353
-
-s = input()
-n = len(s)
-
-# dp[i][j]: i文字目まで処理して、累積の括弧のバランス（開き括弧の数）がjである状態数
-dp = [[0] * (n + 1) for _ in range(n + 1)]
-dp[0][0] = 1
-
-for i in range(n):
-    for j in range(n):
-        if dp[i][j] == 0:
-            continue
-        
-        # 現在の文字が ')' でないなら、開き括弧として扱えるためバランスを +1
-        if s[i] != ')':
-            dp[i + 1][j + 1] = (dp[i + 1][j + 1] + dp[i][j]) % MOD
+N = int(input())
+X, Y = map(int,input().split())
+A, B = [], []
+for i in range(N):
+    a, b, = map(int,input().split())
+    A.append(a)
+    B.append(b)
+A = [0] + A
+B = [0] + B
+dp = [[[float('inf')]*(Y+1) for _ in range(0,X+1)] for _ in range(N+1)]
+#dp[i][たこやき][たいやき]　=　弁当最小個数
+dp[0][0][0] = 0
+for i in range(0,N):
+    for tako in range(0,X+1):
+        for tai in range(0,Y+1):
+            if dp[i][tako][tai] == float('inf'):
+                continue
+            #えらばない
+            dp[i+1][tako][tai] = min(dp[i][tako][tai], dp[i+1][tako][tai])
             
-        # 現在の文字が '(' でなく、かつバランスが 0 でないなら、閉じ括弧として扱えるためバランスを -1
-        if j != 0 and s[i] != '(':
-            dp[i + 1][j - 1] = (dp[i + 1][j - 1] + dp[i][j]) % MOD
+            #えらぶ
+            new_tako = min(tako + A[i+1], X)
+            new_tai = min(tai + B[i+1], Y) 
+            dp[i+1][new_tako][new_tai] = min(dp[i][tako][tai]+1,  dp[i+1][new_tako][new_tai])
+ans = float('inf')
+for i in range(0, N+1):
+    ans = min(dp[i][X][Y],ans)
+if ans == float('inf'):
+    print(-1)
+    exit()
+print(ans)
 
-print(dp[n][0])
