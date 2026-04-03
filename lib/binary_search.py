@@ -30,3 +30,40 @@ ng = min-1 ok = max+1
 ok = min-1  ng = max+1
 *所持金X円を超えない範囲で最大の価値
 '''
+
+
+
+
+
+
+
+#使用例
+from itertools import combinations, permutations, accumulate
+N, K = map(int,input().split())
+A = [0] + list(map(int,input().split()))
+B = [0] + list(map(int,input().split()))
+S_A = list(accumulate(A))
+S_B = list(accumulate(B))
+
+#めぐる式二分探索
+def is_ok(mid, l):
+    return S_B[mid] - S_B[l-1] <= K    
+
+
+def meguru_bisect(ng, ok, l):
+    while (abs(ok - ng) > 1):
+        mid = (ok + ng) // 2
+        if is_ok(mid, l):
+            ok = mid
+        else:
+            ng = mid
+    return ok
+
+rem = []
+for l in range(1,N+1):
+    idx = meguru_bisect(N+1, l-1, l)
+    if idx >= l:
+        rem.append((l, idx))
+
+
+    
