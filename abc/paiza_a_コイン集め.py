@@ -24,24 +24,42 @@ import math
 
 
 
-H, W = map(int,input().split())
-grid = [0]+ [[0] + list(input()) for _ in range(H)]
+H, W, K = map(int, input().split())
 
-dp = [[-1]* (W+1)for i in range(H+1)]
-dp[0][0] = 0
+grid = [list(map(int,input().split())) for _ in range(H)]
 
-for i in range(0,H):
-    for j in range(0, W):
-        if dp[i][j] == -1:
+
+shift = [(1,0), (-1,0), (0,-1), (0,1)]
+ans = -1
+def dfs(sy, sx):
+    global ans
+    stack = [(sy, sx, 0, grid[sy][sx], 0)]
+    visited = set()
+    
+
+    while stack:
+        y, x, cnt, S, flag = stack.pop()
+        
+        if flag == 1:
+            visited.remove((y,x))
             continue
+            
         
-        #下
-        dp[i+1][j] = max(dp[i][j]+ grid[i+1][j], dp[i+1][j])
-        
-        #右下
-        if j+1 <= W:
-            dp[i+1][j+1] = max(dp[i][j]+grid[i+1][j+1], dp[i+1][j+1])
-        
-        #左下
-        if j-1 >= 1:
-            dp[i+1][j-1] = max(dp[i][j]+grid[i+1][j-1], dp[i+1][j-1])
+        else:
+            if cnt == K:
+                ans = max(S, ans)
+                continue
+            
+            stack.append((y, x, cnt +1, grid[y][x], 1))
+            visited.add((y, x))
+
+            for dy, dx in shift:
+                ny, nx = y + dy, x + dx
+
+                if 0 <= ny < H and 0 <= nx < W and (ny, nx) not in visited:
+                    stack.append((ny, nx, cnt +1, S+grid[ny][nx], 0))
+                
+for i in range(H):
+    for j in range(W):
+        dfs(i, j)
+print(ans)
