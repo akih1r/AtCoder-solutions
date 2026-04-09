@@ -15,34 +15,34 @@ def dijkstra(G, start, finish):
     visit = set()
     
     # 最短経路の長さ：アクセスした瞬間に初期値 inf が入る辞書を作成
-    length = defaultdict(lambda: float("inf"))
+    cost = defaultdict(lambda: float("inf"))
     
     # 準備＝＝＝＝＝＝＝＝＝＝
-    length[start] = 0 # スタートの長さは0
+    cost[start] = 0 # スタートの長さは0
     hp = []
     heapq.heappush(hp, (0, start)) # (重み, ノード番号)
     # ＝＝＝＝＝＝＝＝＝＝＝＝
 
     while hp:
-        w, x = heapq.heappop(hp)
+        now_cost, now = heapq.heappop(hp)
         
         # 既に訪問済みならスキップ
-        if x in visit:
+        if now in visit:
             continue
-        visit.add(x)
+        visit.add(now)
         
         # 【オプション】ゴールに着いたらそこで計算を打ち切る場合
         # if x == finish:
-        #    return length[x]
+        #    return cost[x]
 
-        # table[x] から (重み l, 行き先 y) を取り出す
-        for l, y in G[x]:
-            # defaultdictなので length[y] は未探索なら自動で inf になる
-            if y not in visit and length[y] > w + l:
-                length[y] = w + l
-                heapq.heappush(hp, (length[y], y))
+        # G[x] から (重み w, 行き先 nex) を取り出す
+        for w, nex in G[now]:
+            # defaultdictなので cost[y] は未探索なら自動で inf になる
+            if nex not in visit and cost[nex] > now_cost + w:
+                cost[nex] = now_cost + w
+                heapq.heappush(hp, (cost[nex], nex))
 
     # 戻り値のパターン
-    # return length[finish] # ゴールまでの最短経路のみ返す場合（到達不可ならinf）
-    # return length # 全ノードの最短経路情報を辞書で返す場合
+    # return cost[finish] # ゴールまでの最短経路のみ返す場合（到達不可ならinf）
+    # return cost # 全ノードの最短経路情報を辞書で返す場合
     
