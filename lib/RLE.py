@@ -1,3 +1,4 @@
+#ランレングス圧縮
 def rle(xs):
     if not xs:
         return []
