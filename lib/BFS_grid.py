@@ -3,12 +3,16 @@ from collections import deque
 
 que = deque()
 H, W = map(int, input().split())
-sy, sx = map(int, input().split())
-gy, gx = map(int, input().split())
 grid = [input() for _ in range(H)]
 
-sy -= 1; sx -= 1
-gy -= 1; gx -= 1
+for i in range(H):
+    for j in range(W):
+        if grid[i][j] == "S":
+            sy, sx = i, j
+        elif grid[i][j] == "G":
+            gy, gx = i, j
+
+
 
 dist = [[-1]*W for _ in range(H)]
 
