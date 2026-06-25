@@ -23,30 +23,34 @@ from sortedcontainers import SortedSet, SortedList, SortedDict
 #=========================================================
 
 
-cnt = defaultdict(int)
-N, K = map(int,input().split())
+N = int(input())
 A = list(map(int,input().split()))
-
-r = 0
-now = 0
-ans = 0
-for l in range(N):
-    while r < N and ((cnt[A[r]] > 0) or (now + 1 <= K)):
-        if cnt[A[r]] == 0:
-            now += 1
-        cnt[A[r]] += 1
-        r += 1
-        
-
+D = int(input())
+#累積マックス
+max_A = []
+max_ = float('-inf')
+for i in range(N):
+    max_ = max(A[i],max_)
+    max_A.append(max_)
+#逆から累積マックス
+max_rev = float('-inf')
+max_A_rev = []
+for j in range(N-1,-1,-1):
+    max_rev = max(A[j],max_rev)
+    max_A_rev.append(max_rev)
+max_A_rev.reverse()
     
-    ans = max(ans, r-l)
-    
-    if l == r:
-        r += 1
+
+for i in range(D):
+    l, r = map(int,input().split())
+    l -= 1; r -= 1
+    if l-1 < 0:
+        l_max = -1
     else:
-        cnt[A[l]] -= 1
-        if cnt[A[l]] == 0:
-            now -= 1
-    
-    
+        l_max = max_A[l-1]
+    if r+1 >= N:
+        r_max = -1
+    else:
+        r_max = max_A_rev[r+1]
+    print(max(r_max, l_max))
     
