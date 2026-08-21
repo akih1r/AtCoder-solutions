@@ -36,27 +36,25 @@ Diがボーナスステージのどれかにはいるかどうかをみたい
 
 """
 N, M = map(int,input().split())
-D = list(map(int,input().split()))
 events = []
+for i in range(N):
+    x, c = map(int,input().split())
+    events.append((x,1,c))
+
 for i in range(M):
     l, r = map(int,input().split())
-    events.append((l, 0))
-    events.append((r + 1, 1))
+    events.append((l,0))
+    events.append((r,2))
 events.sort()
-
-xs = []
-imos = [0]*(2*M + 1)#[)のimos
-for i, (c, g) in enumerate(groupby(events, lambda x: x[0])):
-    xs.append(c)
-    for _, f in g:
-        imos[i] += 1 if f == 0 else -1
-imos = list(accumulate(imos))
-
+coverd = 0
 ans = 0
-for i in range(N):
-    tmp = D[i]
-    k = bisect.bisect_right(xs, D[i]) - 1
-    if k >= 0 and imos[k] > 0:
-        tmp *= 2
-    ans += tmp
+for e in events:
+    if e[1] == 0:
+        coverd += 1
+    elif e[1] == 1:
+        if coverd >0:
+            ans += e[2]
+    else:
+        coverd -= 1
 print(ans)
+    
