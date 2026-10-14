@@ -1,3 +1,6 @@
+import bisect
+
+
 #めぐる式二分探索
 def is_ok(ans, before, mid):
     return bool
@@ -65,5 +68,10 @@ for l in range(1,N+1):
     if idx >= l:
         rem.append((l, idx))
 
-
-    
+l: list
+a: int
+idx = bisect.bisect_left(l, a)
+if idx > N-1:
+    print(N)
+    #continue
+print(idx+1)

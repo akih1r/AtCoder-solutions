@@ -1,101 +1,119 @@
-
-#=========================================================
-# 0-indexed で引数を受け取り、内部で 1-indexed に変換するクラス
-#=========================================================
-
-class Fenwick_Tree:
+class BIT:
     def __init__(self, n):
         self._n = n
-        # 内部は 1-indexed 用にサイズ n+1
         self.data = [0] * (n + 1)
-    
+
     def add(self, p, x):
-        # p番目(0-indexed)にxを加算
-        idx = p + 1
-        while idx <= self._n:
-            self.data[idx] += x
-            idx += idx & -idx
-    
-    def update(self, p, x, pre):
-        # p番目の値をpreからxに変更
-        self.add(p, x - pre)
-        #メイン関数で以下のようにするひつようがある
-        #pre = A[0_idx]
-        #fw.update(0_idx, after, pre)
-        #A[x-1] = after
-        
-        
-    
-    def sum(self, l, r):
-        # [l, r] の閉区間（0-indexed）の和を求める
-        # 内部計算用にそれぞれ +1 する
-        l_idx = l + 1
-        r_idx = r + 1
-        if l_idx > r_idx: return 0
-        return self._sum(r_idx) - self._sum(l_idx - 1)
-    
+        p += 1
+        while p <= self._n:
+            self.data[p] += x
+            p += p & -p
+
     def _sum(self, i):
-        # 1 から i までの累積和
         s = 0
         while i > 0:
             s += self.data[i]
             i -= i & -i
         return s
-    
-    # =========================================================
-    # ↓今回付け加えたメソッド（区間加算・一点取得）
-    # =========================================================
 
-    def add_range(self, l, r, x):
-        # [l, r] の閉区間（0-indexed）すべてに x を加算する（いもす法）
-        # 内部の add メソッドを使い回す
-        self.add(l, x)
-        self.add(r + 1, -x)
+    def sum(self, l, r):          # [l, r) 半開区間
+        return self._sum(r) - self._sum(l)
 
     def get(self, p):
-        # p番目(0-indexed)の「現在の値」を取得する
-        # 区間加算（add_range）を使った場合は、このメソッドで値を取り出す
-        return self._sum(p + 1)
+        return self.sum(p, p + 1)
 
 
-# サイズは n_all + 1 など、r+1 のアクセスではみ出さないように少し大きめに取る
-#fw = Fenwick_Tree(n_all + 1)
+"""
+作る（全部 0）	bit = BIT(N)	O(N)
+作る（初期配列 A から）	for i, a in enumerate(A): bit.add(i, a)	O(N log N)
+加算 A[p] += x	bit.add(p, x)	O(log N)
+代入 A[p] = v	bit.add(p, v - bit.get(p))	O(log N)
+1点取得 A[p]	bit.get(p)	O(log N)
+区間和 sum(A[l:r])	bit.sum(l, r)	O(log N)
+累積和 S[i]（A[0..i-1] の和）	bit.sum(0, i)	O(log N)
+全体和	bit.sum(0, N)	O(log N)
+空区間	bit.sum(l, l) → 0	—
+"""
 
-# 配る
-#fw.add_range(l, r, v)
 
-# 値を見る
-#current_val = fw.get(i)
+class BIT:
+    """0-indexed の Fenwick Tree（点更新・区間和）"""
 
-#配列としてなかみをみる
-#for i in range(5):
-    #print(lst.get(i), end=" ")
+    def __init__(self, n_or_list):
+        if isinstance(n_or_list, int):
+            self._n = n_or_list
+            self.data = [0] * (self._n + 1)
+        else:                              # リストから O(n) で構築
+            a = list(n_or_list)
+            self._n = len(a)
+            self.data = [0] + a
+            for i in range(1, self._n + 1):
+                j = i + (i & -i)
+                if j <= self._n:
+                    self.data[j] += self.data[i]
 
-line1 = input().split()
-if line1:
-    N, Q = map(int, line1)
-    fw = Fenwick_Tree(N)
+    def add(self, p, x):                   # a[p] += x   (0 <= p < n)
+        assert 0 <= p < self._n
+        p += 1
+        while p <= self._n:
+            self.data[p] += x
+            p += p & -p
 
-    for i in range(Q):
-        line = list(map(int, input().split()))
-        if not line: continue
-        
-        if line[0] == 1:
-            # クエリ1: A[pos] = x (posは1-indexed)
-            # クラスには 0-indexed で渡すため -1 する
-            pos_0 = line[1] - 1
-            x = line[2]
-            
-            # 現在の値を取得（0-indexedで指定）
-            pre = fw.sum(pos_0, pos_0)
-            fw.add(pos_0, x, pre)
-            
-        else:
-            # クエリ2: A[l] から A[r-1] までの和
-            # l, r は 1-indexed で与えられる
-            # 0-indexed に直すと、インデックスは (l-1) から (r-2) まで
-            l_0 = line[1] - 1
-            r_0 = line[2] - 2
-            
-            # クラスには 0-indexed の範囲 [l_0, r_0] を渡す
-            print(fw.sum(l_0, r_0))
+    def _sum(self, i):                     # a[0] + ... + a[i-1]
+        s = 0
+        while i > 0:
+            s += self.data[i]
+            i -= i & -i
+        return s
+
+    def sum(self, l, r):                   # [l, r) 半開区間
+        assert 0 <= l <= r <= self._n
+        return self._sum(r) - self._sum(l)
+
+    def get(self, p):                      # a[p]
+        return self.sum(p, p + 1)
+
+    def set(self, p, x):                   # a[p] = x
+        self.add(p, x - self.get(p))
+
+    def kth(self, k):
+        """a が全て非負のとき、累積和が k 以上になる最小の添字を返す。
+        k 番目(1-indexed)の要素の位置。全体和 < k なら n を返す。"""
+        if k <= 0:
+            return 0
+        x = 0
+        b = 1 << (self._n.bit_length())
+        while b:
+            if x + b <= self._n and self.data[x + b] < k:
+                k -= self.data[x + b]
+                x += b
+            b >>= 1
+        return x
+
+"""
+作る（全部 0）              bit = BIT(N)                  O(N)
+作る（初期配列 A から）      bit = BIT(A)                  O(N)      ← 1つずつ add より速い
+加算 A[p] += x             bit.add(p, x)                 O(log N)
+代入 A[p] = v              bit.set(p, v)                 O(log N)
+1点取得 A[p]               bit.get(p)                    O(log N)
+区間和 sum(A[l:r])         bit.sum(l, r)                 O(log N)
+累積和 S[i]（A[0..i-1]）    bit.sum(0, i)                 O(log N)
+全体和                     bit.sum(0, N)                 O(log N)
+空区間                     bit.sum(l, l) -> 0            —
+k 番目の位置 (累積和が初めて k 以上になる位置)              bit.kth(k)                    O(log N)  ← A が全て非負のときのみ
+要素数                     bit._n                        O(1)
+
+添字は全て 0-indexed。p は 0 <= p < N、l, r は 0 <= l <= r <= N。
+範囲外は assert で落ちる（add(N, x) が黙って無視されることはない）。
+
+累積和が初めて k 以上になる位置
+kth(k) の意味：sum(0, p) < k <= sum(0, p+1) となる最小の p を返す。
+  ・集合を「その値の位置を 1」で管理していれば、k 番目に小さい要素の値が取れる
+  ・kth(1) = 最小値の位置、kth(bit.sum(0, N)) = 最大値の位置
+  ・k <= 0 なら 0、k が全体和より大きければ N が返る
+
+値をそのまま添字に使うとき（転倒数・k 番目取得など）は
+  ・値が 0..M なら BIT(M + 1)
+  ・値が 1..M なら BIT(M + 1) にして add(v, 1)、または add(v - 1, 1)
+  ・値が大きい / 負を含むなら座標圧縮する
+"""

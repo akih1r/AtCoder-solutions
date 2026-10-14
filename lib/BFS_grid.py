@@ -13,8 +13,8 @@ for i in range(H):
             gy, gx = i, j
 
 
-
-dist = [[-1]*W for _ in range(H)]
+INF = float('inf')
+dist = [[INF]*W for _ in range(H)]   # ← -1 を INF に
 
 shift = [(1,0), (-1,0), (0,-1), (0,1)]  # 上下左右
 que.append((sy, sx))
@@ -29,8 +29,7 @@ while que:
     for dy, dx in shift:
         ny, nx = y + dy, x + dx
 
-        if 0 <= ny < H and 0 <= nx < W and grid[ny][nx] != '#' and dist[ny][nx] == -1:
-            dist[ny][nx] = dist[y][x] + 1   # ← ここが dist の更新
+        if 0 <= ny < H and 0 <= nx < W and grid[ny][nx] != '#' and dist[y][x] + 1 < dist[ny][nx]:   # ← 比較に
+            dist[ny][nx] = dist[y][x] + 1
             que.append((ny, nx))
-
-#print(dist[gy][gx])
+print(dist[gy][gx] if dist[gy][gx] != INF else -1)
