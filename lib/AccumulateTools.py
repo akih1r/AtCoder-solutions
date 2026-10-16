@@ -1,4 +1,23 @@
 from collections import defaultdict
+from itertools import combinations, permutations, accumulate, groupby, takewhile
+
+# 累積max(左から)
+def acc_max_L(A):
+    return list(accumulate(A, max))
+
+def acc_min_L(A):
+    return list(accumulate(A, min))
+
+def acc_max_R(A):
+    A_rev = list(reversed(A))
+    tmp = list(accumulate(A_rev, max)) 
+    return list(reversed(tmp))
+
+def acc_min_R(A):
+    A_rev = list(reversed(A))
+    tmp = list(accumulate(A_rev, min))
+    return list(reversed(tmp))
+
 
 
 # 二次元累積和
