@@ -100,7 +100,7 @@ class LazySegTree:
                 # 子から親へ反映
                 self._update(p >> i)
         else:
-            # 区間加算
+            # 区間更新
             assert 0 <= left <= right <= self._n
             if left == right:
                 return
@@ -237,7 +237,7 @@ op:_update と prod(子2つの値から親の値を作る)
 mapping:_all_apply の1行目(ノードの値 d[k] を更新する)
 composition:_all_apply の2行目(予約 lz[k] に新しい作用を重ねる)
 
-apply(l,r,k)でどういう演算でkをつかうのかをmappingがきめる
+apply(l,r,k)でどういう演算でk(kはi具体的な数字)をつかうのかをmappingがきめる
 conpositonは新しい作用fと古い作用gがあったときに二つをあわせたときどうなるかを決める
 
 
