@@ -3,6 +3,8 @@ class UnionFind:
         self.parents = [-1] * n
         # 各グループの辺の数を管理する配列
         self.edge_counts = [0] * n
+        # 連結成分（親）の数
+        self.group_count = n
         
     def find(self, x):
         if self.parents[x] < 0:
@@ -26,6 +28,7 @@ class UnionFind:
         self.edge_counts[x] += self.edge_counts[y] + 1
         self.parents[x] += self.parents[y]
         self.parents[y] = x
+        self.group_count -= 1
         
     def size(self, x):
         return -self.parents[self.find(x)]
@@ -33,3 +36,7 @@ class UnionFind:
     def edge_size(self, x):
         # 頂点xが含まれるグループの「辺の数」を返す
         return self.edge_counts[self.find(x)]
+    
+    def group_num(self):
+        # 連結成分（親）の数を返す
+        return self.group_count
